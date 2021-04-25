@@ -3,3 +3,4 @@ backend/node_modules
 frontend/tresster/.git
 # frontend/tresster/.env
 frontend/tresster/node_modules
+frontend/tresster/build
