@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ishank162/frontend:v37
+          ports:
+            - containerPort: 80
+          # env:
+          #   - name: REACT_APP_NODE_PORT
+          #     value: "5000"
+          #   - name: REACT_APP_NGINX_PORT
+          #     value: "8080"
+          #   - name: REACT_APP_NODE_ENDPOINT
+          #     value: "http://$(BACKEND_SERVICE_SERVICE_HOST):"
+          #   - name: REACT_APP_NGINX_ENDPOINT
+          #     value: "http://${NGINX_SERVICE_SERVICE_HOST}:"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  # type: NodePort
+  # type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: ishank162/backend:v23
+          ports:
+            - containerPort: 5000
+          # env:
+          #   - name: PORT
+          #     value: "5000"
+          #   - name: MONGO_ST
+          #     value: "mongodb://ishank:ishank@cluster0-shard-00-00.ank2h.mongodb.net:27017,cluster0-shard-00-01.ank2h.mongodb.net:27017,cluster0-shard-00-02.ank2h.mongodb.net:27017/test?ssl=true&replicaSet=atlas-ypl89o-shard-0&authSource=admin&retryWrites=true&w=majority"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  # type: NodePort
+  ports:
+    - port: 5000
+      targetPort: 5000
+      # nodePort: 30000

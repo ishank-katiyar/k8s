@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        # - name: nginx
+        #   image: ishank162/nginx-m:v3
+        #   ports:
+        #     - containerPort: 8080
+        - name: backend
+          image: ishank162/backend:v19
+          ports:
+            - containerPort: 5000
+          # env:
+          #   - name: PORT
+          #     value: "5000"
+          #   - name: MONGO_ST
+          #     value: "mongodb://ishank:ishank@cluster0-shard-00-00.ank2h.mongodb.net:27017,cluster0-shard-00-01.ank2h.mongodb.net:27017,cluster0-shard-00-02.ank2h.mongodb.net:27017/test?ssl=true&replicaSet=atlas-ypl89o-shard-0&authSource=admin&retryWrites=true&w=majority"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 5000
+      targetPort: 5000

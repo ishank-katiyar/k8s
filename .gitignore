@@ -1,0 +1,5 @@
+backend/node_modules
+# backend/.env
+frontend/tresster/.git
+# frontend/tresster/.env
+frontend/tresster/node_modules
