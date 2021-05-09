@@ -3,21 +3,18 @@ import axios from "axios";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-const dotenv = require("dotenv");
-dotenv.config();
-// const PORT = process.env.REACT_APP_NGINX_PORT || 5000;
-// const endpoint = process.env.REACT_APP_NGINX_ENDPOINT + PORT;
-// const PORT = process.env.REACT_APP_NODE_PORT || 5000;
-// const endpoint = process.env.REACT_APP_NODE_ENDPOINT + PORT;
-// const socketendpoint = "/";
-const endpoint = "/api";
+// const dotenv = require("dotenv");
+// dotenv.config();
+// const endpoint = process.env.REACT_APP_API_ENDPOINT;
 
-console.log(endpoint);
+const config = require("../config/config");
+
 let socket;
+
 try {
 	console.log("going to connect to socket");
 	socket = socketIOClient("", {
-		path: "/socket/",
+		path: config.SOCKET_ENDPOINT,
 		// transports: ["websocket", "polling", "flashsocket"],
 	});
 	console.log(socket);
@@ -27,10 +24,11 @@ try {
 
 function App() {
 	const [data, setdata] = useState([]);
+	
 	const [newdata, setnewdata] = useState({ name: "", likes: 0 });
-	// let socket;
+
 	try {
-		socket.on("getAll", (res) => {
+		socket.on(config.REFRESH, (res) => {
 			console.log("data from socket", res);
 			setdata(res);
 		});
@@ -40,10 +38,10 @@ function App() {
 
 	useEffect(() => {
 		console.log("component reload...");
-		// const socket = socketIOClient(endpoint);
+		// const socket = socketIOClient(config.API_ENDPOINT);
 		try {
 			axios
-				.get(endpoint + "/")
+				.get(config.API_ENDPOINT + "/")
 				.then((res) => {
 					console.log(res);
 					console.log("backend connected...");
@@ -55,7 +53,7 @@ function App() {
 			console.log("7.", err);
 		}
 		try {
-			socket.emit("getAll");
+			socket.emit(config.REFRESH);
 		} catch (err) {
 			console.log("1", err);
 		}
@@ -64,7 +62,7 @@ function App() {
 	// useEffect(() => {
 	// 	console.log("useEffect");
 	// 	axios
-	// 		.get(endpoint + "/getAll", { validateStatus: () => true })
+	// 		.get(config.API_ENDPOINT + "/getAll", { validateStatus: () => true })
 	// 		.then((res) => {
 	// 			setdata(res.data);
 	// 			console.log("data from api", res.data);
@@ -78,7 +76,7 @@ function App() {
 
 	// const RefreshData = () => {
 	// 	// console.log("RefreshData");
-	// 	axios.get(endpoint + "/getAll").then((res) => {
+	// 	axios.get(config.API_ENDPOINT + "/getAll").then((res) => {
 	// 		// console.log(res);
 	// 		setdata(res.data);
 	// 	});
@@ -90,9 +88,15 @@ function App() {
 			alert("name cannot be empty");
 			return;
 		}
+		try {
+			socket.emit(config.CREATE_ENTRY, newdata);
+		} catch (err) {
+			console.log("2.", err);
+		}
+		setnewdata({ name: "", likes: 0 });
 
 		// axios
-		// 	.post(endpoint + "/createNewEntry", newdata)
+		// 	.post(config.API_ENDPOINT + "/createNewEntry", newdata)
 		// 	.then((res) => {
 		// 		console.log(res);
 		// 		if (res.data === "Successfully created new entry !!") {
@@ -104,12 +108,6 @@ function App() {
 		// 	.catch((err) =>
 		// 		console.log("error occured while creating new entry", err)
 		// 	);
-		try {
-			socket.emit("createEntry", newdata);
-		} catch (err) {
-			console.log("2.", err);
-		}
-		setnewdata({ name: "", likes: 0 });
 	};
 
 	const UpdateData = (idx) => {
@@ -119,17 +117,17 @@ function App() {
 			name: data[idx].name,
 			likes: data[idx].likes,
 		};
+		try {
+			socket.emit(config.UPDATE_ENTRY, Data);
+		} catch (err) {
+			console.log("3", err);
+		}
 		// axios
-		// 	.post(endpoint + "/updateEntry", Data)
+		// 	.post(config.API_ENDPOINT + "/updateEntry", Data)
 		// 	.then((res) => {
 		// 		// console.log(res);
 		// 	})
 		// 	.catch((err) => console.log("error occured while updating data", err));
-		try {
-			socket.emit("updateEntry", Data);
-		} catch (err) {
-			console.log("3", err);
-		}
 	};
 
 	const DeleteData = (idx) => {
@@ -137,8 +135,13 @@ function App() {
 		const Data = {
 			_id: data[idx]._id,
 		};
+		try {
+			socket.emit(config.DELETE_ENTRY, Data);
+		} catch (err) {
+			console.log("4", err);
+		}
 		// axios
-		// 	.post(endpoint + "/deleteEntry", Data)
+		// 	.post(config.API_ENDPOINT + "/deleteEntry", Data)
 		// 	.then((res) => {
 		// 		if (res.statusText === "OK") {
 		// 			RefreshData();
@@ -147,17 +150,12 @@ function App() {
 		// 		}
 		// 	})
 		// 	.catch((err) => console.log("error occured while deleting data", err));
-		try {
-			socket.emit("deleteEntry", Data);
-		} catch (err) {
-			console.log("4", err);
-		}
 	};
 
 	// useEffect(() => {
-	// 	socket.emit("getAll");
+	// 	socket.emit(config.REFRESH);
 
-	// 	socket.on("getAll", (res) => {
+	// 	socket.on(config.REFRESH, (res) => {
 	// 		console.log("data from socket", res);
 	// 		setdata(res);
 	// 	});
@@ -236,7 +234,6 @@ function App() {
 			</div> */}
 			<table>
 				{data.map((ele, idx) => {
-					// console.log(ele);
 					return Row(ele, idx);
 				})}
 			</table>

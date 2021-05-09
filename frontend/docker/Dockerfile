@@ -4,19 +4,19 @@
 FROM node:10.16-alpine as build
 
 # curl install
-RUN apk --no-cache add curl
-RUN apk --no-cache add vim
+RUN apk update && apk --no-cache add curl vim bash
 
 # Working directory be app
 WORKDIR /app
 
-COPY package*.json ./
+# COPY package*.json ./
+COPY . .
 
 ###  Installing dependencies
-RUN npm install --silent
-RUN npm install react-scripts
-COPY . .
-RUN npm run build --silent
+# RUN npm install --silent && npm install react-scripts && npm run build --silent
+RUN npm install && npm install react-scripts && npm run build
+# COPY . .
+# RUN npm run build --silent
 # RUN pwd && ls -la
 
 # copy local files to app folder
@@ -34,10 +34,10 @@ RUN apk --no-cache add gettext
 # RUN ls -la ./src
 COPY --from=build /app/build /usr/share/nginx/html/build
 
-RUN ls -la /usr/share/nginx/html/
+# RUN ls -la /usr/share/nginx/html/
 
-RUN rm /etc/nginx/nginx.conf
-RUN rm -rf /etc/nginx/conf.d
+RUN rm /etc/nginx/nginx.conf && rm -rf /etc/nginx/conf.d
+# RUN rm -rf /etc/nginx/conf.d
 
 
 COPY nginx/nginx/nginx.conf /etc/nginx/nginx.conf

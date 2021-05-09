@@ -1,6 +1,9 @@
 backend/node_modules
-# backend/.env
-frontend/tresster/.git
-# frontend/tresster/.env
-frontend/tresster/node_modules
-frontend/tresster/build
+backend/useless
+frontend/useless
+frontend/node_modules
+frontend/build
+kubernetes/useless
+useless
+TODO
+.gitignore
