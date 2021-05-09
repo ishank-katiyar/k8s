@@ -40,7 +40,7 @@ RUN rm /etc/nginx/nginx.conf && rm -rf /etc/nginx/conf.d
 # RUN rm -rf /etc/nginx/conf.d
 
 
-COPY nginx/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/* /etc/nginx/
 
 # RUN envsubst < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf
 
@@ -49,6 +49,6 @@ EXPOSE 80
 
 # CMD ["npm","start"]
 # CMD ["envsubst < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf && nginx -g 'daemon off';"]
-COPY ./nginx/nginx/run-nginx.sh .
-RUN chmod +x run-nginx.sh
-CMD ["./run-nginx.sh"]
+# COPY ./nginx/nginx/run-nginx.sh .
+RUN chmod +x /etc/nginx/run-nginx.sh
+CMD ["/etc/nginx/run-nginx.sh"]

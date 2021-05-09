@@ -3,10 +3,6 @@ import axios from "axios";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-// const dotenv = require("dotenv");
-// dotenv.config();
-// const endpoint = process.env.REACT_APP_API_ENDPOINT;
-
 const config = require("../config/config");
 
 let socket;
@@ -15,7 +11,6 @@ try {
 	console.log("going to connect to socket");
 	socket = socketIOClient("", {
 		path: config.SOCKET_ENDPOINT,
-		// transports: ["websocket", "polling", "flashsocket"],
 	});
 	console.log(socket);
 } catch (err) {
@@ -38,7 +33,6 @@ function App() {
 
 	useEffect(() => {
 		console.log("component reload...");
-		// const socket = socketIOClient(config.API_ENDPOINT);
 		try {
 			axios
 				.get(config.API_ENDPOINT + "/")
@@ -59,31 +53,7 @@ function App() {
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	console.log("useEffect");
-	// 	axios
-	// 		.get(config.API_ENDPOINT + "/getAll", { validateStatus: () => true })
-	// 		.then((res) => {
-	// 			setdata(res.data);
-	// 			console.log("data from api", res.data);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log("error occured while getting data from api", err);
-	// 			console.log(JSON.stringify(err));
-	// 			console.log(JSON.stringify(err, undefined, 4));
-	// 		});
-	// }, []);
-
-	// const RefreshData = () => {
-	// 	// console.log("RefreshData");
-	// 	axios.get(config.API_ENDPOINT + "/getAll").then((res) => {
-	// 		// console.log(res);
-	// 		setdata(res.data);
-	// 	});
-	// };
-
 	const AddData = () => {
-		// console.log("Adddata");
 		if (newdata.name === "" || newdata.name === undefined) {
 			alert("name cannot be empty");
 			return;
@@ -94,24 +64,9 @@ function App() {
 			console.log("2.", err);
 		}
 		setnewdata({ name: "", likes: 0 });
-
-		// axios
-		// 	.post(config.API_ENDPOINT + "/createNewEntry", newdata)
-		// 	.then((res) => {
-		// 		console.log(res);
-		// 		if (res.data === "Successfully created new entry !!") {
-		// 			setnewdata({ name: "", likes: 0 });
-		// 			RefreshData();
-		// 		}
-		// 		// console.log(res);
-		// 	})
-		// 	.catch((err) =>
-		// 		console.log("error occured while creating new entry", err)
-		// 	);
 	};
 
 	const UpdateData = (idx) => {
-		// console.log("UpdateData");
 		const Data = {
 			_id: data[idx]._id,
 			name: data[idx].name,
@@ -122,16 +77,9 @@ function App() {
 		} catch (err) {
 			console.log("3", err);
 		}
-		// axios
-		// 	.post(config.API_ENDPOINT + "/updateEntry", Data)
-		// 	.then((res) => {
-		// 		// console.log(res);
-		// 	})
-		// 	.catch((err) => console.log("error occured while updating data", err));
 	};
 
 	const DeleteData = (idx) => {
-		// console.log("DeleteData");
 		const Data = {
 			_id: data[idx]._id,
 		};
@@ -140,50 +88,25 @@ function App() {
 		} catch (err) {
 			console.log("4", err);
 		}
-		// axios
-		// 	.post(config.API_ENDPOINT + "/deleteEntry", Data)
-		// 	.then((res) => {
-		// 		if (res.statusText === "OK") {
-		// 			RefreshData();
-		// 		} else {
-		// 			console.log(res);
-		// 		}
-		// 	})
-		// 	.catch((err) => console.log("error occured while deleting data", err));
 	};
 
-	// useEffect(() => {
-	// 	socket.emit(config.REFRESH);
-
-	// 	socket.on(config.REFRESH, (res) => {
-	// 		console.log("data from socket", res);
-	// 		setdata(res);
-	// 	});
-	// }, []);
-
 	const handlechange = (idx, col, value) => {
-		// console.log("Handlechange");
-		// console.log(data);
-		// console.log(data[0]);
 		let newdata = data;
 		if (col === "name") {
 			newdata[idx].name = value;
 		} else if (col === "likes") {
 			newdata[idx].likes = value;
 		}
-		// console.log("newdata", newdata);
 		setdata([...newdata]);
 	};
 
 	const handlechangenewdata = (col, value) => {
-		// console.log("Handlechangenewdata");
 		let nn = newdata;
 		if (col === "name") {
 			nn.name = value;
 		} else if (col === "likes") {
 			nn.likes = value;
 		}
-		// console.log("new new entry", nn);
 		setnewdata({
 			name: nn.name,
 			likes: nn.likes,
@@ -229,9 +152,6 @@ function App() {
 
 	return (
 		<div>
-			{/* <div>
-				<button onClick={() => RefreshData()}>Refresh page</button>
-			</div> */}
 			<table>
 				{data.map((ele, idx) => {
 					return Row(ele, idx);

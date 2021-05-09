@@ -4,6 +4,8 @@ frontend/useless
 frontend/node_modules
 frontend/build
 kubernetes/useless
+kubernetes/config_secret
+kubernetes/config_map
 useless
 TODO
 .gitignore

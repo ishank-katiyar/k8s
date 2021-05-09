@@ -8,7 +8,6 @@ mongoose.set("useFindAndModify", false);
 mongoose
 	.connect(
 		process.env.MONGO_ST,
-		// { useNewUrlParser: true, useUnifiedTopology: true }
 		{ useNewUrlParser: true, useUnifiedTopology: true, auth: {user: process.env.DB_USERNAME, password: process.env.DB_PASSWORD} }
 	)
 	.then(() => console.log("Connected to database..."))
